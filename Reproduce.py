@@ -23,10 +23,13 @@ class Reproduce:
         offspring_alleles = [punnetSquare[random.randint(0,3)] for i in range(offspring_num)]
         return [Creature(creature1.generation+1, a.allele_a, a.allele_b) for a in offspring_alleles]
 
-    def __init__(self, creature1, creature2):
+    def __init__(self, creature1, creature2, parthenogenesis=False):
         self.creature1 = creature1
         self.creature2 = creature2
-        self.offspring = self.createOffsprings(creature1, creature2)
+        if parthenogenesis and creature2 is None:
+            self.offspring = self.createOffsprings(creature1, creature1)
+        else:
+            self.offspring = self.createOffsprings(creature1, creature2)
 
     def __repr__(self):
         return f'Reproduce({self.creature1},{self.creature2},{self.offspring})'

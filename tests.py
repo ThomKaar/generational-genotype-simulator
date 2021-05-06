@@ -1,4 +1,5 @@
 from main import main, reproduceGeneration
+from Creature import Creature
 import unittest
 
 class TestGenesMethods(unittest.TestCase):
@@ -12,25 +13,25 @@ class TestGenesMethods(unittest.TestCase):
 
     def test_two_gens(self):
         pops, num_pops = main(2, 100, 0.5, 0.5, 0)
-        self.assetEqual(num_pops, 2)
+        self.assertEqual(num_pops, 2)
 
     def test_higher_num_gens(self):
         pops, num_pops = main(20, 100, 0.5, 0.5, 0)
-        self.assetEqual(num_pops >  10, True)
+        self.assertEqual(num_pops > 2, True)
 
     def test_empty_mono_reproduceGeneration(self):
         creatures = []
-        gen = reproduceGeneration(creatures, true)
+        gen = reproduceGeneration(creatures, True)
         self.assertEqual(len(gen), 0)
 
     def test_empty_poly_reproduceGeneration(self):
         creatures = []
-        gen = reproduceGeneration(creatures, false)
+        gen = reproduceGeneration(creatures, False)
         self.assertEqual(len(gen), 0)
 
     def test_one_reproduceGeneration(self):
         creatures = [Creature(1, 'A', 'B')]
-        gen = reproduceGeneration(creatures, false)
+        gen = reproduceGeneration(creatures, False)
         self.assertEqual(len(gen), 0)
 
     def test_nonzero_reproduceGeneration(self):
@@ -50,12 +51,12 @@ class TestGenesMethods(unittest.TestCase):
             Creature(1, 'A', 'A'),
             Creature(1, 'B', 'B')
         ]
-        gen = reproduceGeneration(creatures)
+        gen = reproduceGeneration(creatures, monogamyFlag=True)
         self.assertEqual(len(gen) > 0, True)
 
     def test_nonCompatible_monogamy_reproduceGeneration(self):
         creatures = [Creature(1, 'A', 'A', 1), Creature(1, 'B', 'B', 10)]
-        gen = reproduceGeneration(creatures)
+        gen = reproduceGeneration(creatures, monogamyFlag=True)
         self.assertEqual(len(gen), 0)
 
     def test_nonCompatible_polygamy_repoduceGeneration(self):
@@ -85,8 +86,16 @@ class TestGenesMethods(unittest.TestCase):
             Creature(1, 'A', 'A', 1),
             Creature(1, 'B', 'B', 10),
         ]
-        gen = reproduceGeneration(creatures, monogamyFlag=false)
+        gen = reproduceGeneration(creatures, monogamyFlag=False)
         self.assertEqual(len(gen) > 0, True)
-        pass
+
+    def test_parthenogeneisis(self):
+        gen = reproduceGeneration([Creature(1, 'A', 'B')], monogamyFlag=False, parthenogenesis=True)
+        gen += reproduceGeneration([Creature(1, 'A', 'B')], monogamyFlag=False, parthenogenesis=True)
+        gen += reproduceGeneration([Creature(1, 'A', 'B')], monogamyFlag=False, parthenogenesis=True)
+        gen += reproduceGeneration([Creature(1, 'A', 'B')], monogamyFlag=False, parthenogenesis=True)
+        gen += reproduceGeneration([Creature(1, 'A', 'B')], monogamyFlag=False, parthenogenesis=True)
+        self.assertEqual(len(gen) > 0, True)
+
 if __name__ == '__main__':
     unittest.main()
